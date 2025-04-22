@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react"
 
 const apiKey = "ebbf3e3171e8c1e0bf1a5fe7abe76e04";
 const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
