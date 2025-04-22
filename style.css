@@ -24,6 +24,15 @@ body{
     text-align: center;
 }
 
+/* colores del clima */
+.card.default { background: linear-gradient(132deg, #f3eec3, #468189); }
+.card.sunny   { background: linear-gradient(132deg, #fce886, #9bc9dd); }
+.card.cloudy  { background: linear-gradient(132deg, #9ea7b8, #5d6472); }
+.card.rainy   { background: linear-gradient(132deg, #4e9dd4, #1662a7); }
+.card.drizzle { background: linear-gradient(132deg, #9cc9e3, #4d8dbb); }
+.card.misty   { background: linear-gradient(132deg, #cfd4d9, #8e959c); }
+.card.snowy   { background: linear-gradient(132deg, #e8f7ff, #a8d4f2); }
+
 .search{
     width: 100%;
     display: flex;
@@ -111,3 +120,5 @@ body{
     color: #e63946;
     display: none;
 }
+
+
