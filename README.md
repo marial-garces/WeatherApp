@@ -72,13 +72,13 @@ weather-app/
 
 * Base source code from **GreatStack** and **Avinash**.
 * Weather data powered by **OpenWeatherMap**.
-* Sun/cloud/rain icons based on the free set from **FreeP!k**.
+* Sun/cloud/rain icons based on the free set from [FreeP!k](https://www.freepik.com).
 
 ---
 
 ## License
 
-This project is released under the **MIT License** — see the [`LICENSE`] file for details.
+This project is released under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 
 
