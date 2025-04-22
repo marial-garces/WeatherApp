@@ -7,82 +7,62 @@ const searchBtn = document.querySelector(".search button");
 const weatherIcon = document.querySelector(".weather-icon");
 const weatherCard = document.getElementById("weatherCard");
 
-async function checkWeather(city) {
-    const weatherResponse = await fetch(apiUrl + city + `&appid=${apiKey}`);
+// funcion con todo que tienen que ver con la interfaz de usuario
+function weatherUI(data) {
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+    document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+    document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
+    const weatherState = data.weather[0].main;
 
-    if (weatherResponse.status == 404) {
-        document.querySelector(".error").style.display = "block";
-        document.querySelector(".weather").style.display = "none";
-    }
-    else {
+    // iconos de clima
+    weatherIcon.src = "images/" + data.weather[0].main.toLowerCase() + ".png";
 
-        var data = await weatherResponse.json();
+    // colores de fondo dependiendo del clima
+    weatherCard.classList.remove("cloudy", "sunny", "rainy", "drizzle", "misty", "snowy", "default");
+    const weatherClass = { Clouds: "cloudy", Clear: "sunny", Rain: "rainy", Drizzle: "drizzle", Mist: "misty", Snow: "snowy" };
+    weatherCard.classList.add(weatherClass[weatherState] || "default");
 
-        document.querySelector(".city").innerHTML = data.name;
-        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
-        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
-
-        const weatherState = data.weather[0].main;
-
-        if (weatherState == "Clouds") {
-            weatherIcon.src = "images/clouds.png";
-        }
-        else if (weatherState == "Clear") {
-            weatherIcon.src = "images/clear.png";
-        }
-        else if (weatherState == "Rain") {
-            weatherIcon.src = "images/rain.png";
-        }
-        else if (weatherState == "Drizzle") {
-            weatherIcon.src = "images/drizzle.png";
-        }
-        else if (weatherState == "Mist") {
-            weatherIcon.src = "images/mist.png";
-        }
-        else if (weatherState == "Snow") {
-            weatherIcon.src = "images/snow.png";
-        }
-
-        weatherCard.classList.remove("cloudy", "sunny", "rainy", "drizzle", "misty", "snowy", "default");
-
-        let weatherClass = "default";
-        switch (weatherState) {
-            case "Clouds":
-                weatherClass = "cloudy";
-                break;
-            case "Clear":
-                weatherClass = "sunny";
-                break;
-            case "Rain":
-                weatherClass = "rainy";
-                break;
-            case "Drizzle":
-                weatherClass = "drizzle";
-                break;
-            case "Mist":
-                weatherClass = "misty";
-                break;
-            case "Snow":
-                weatherClass = "snowy";
-                break;
-        }
-
-        weatherCard.classList.add(weatherClass);
-
-        document.querySelector(".weather").style.display = "block";
-        document.querySelector(".error").style.display = "none";
-    }
+    document.querySelector(".weather").style.display = "block";
+    document.querySelector(".error").style.display = "none";
 
 }
 
+//para poder buscar el clima de la ciudad
+async function checkWeather(city) {
+    const weatherResponse = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+    if (weatherResponse.status == 404) {
+        return document.querySelector(".error").style.display = "block";
+    }
+    const data = await weatherResponse.json();
+    weatherUI(data);
+}
+
+// para poder buscar el clima por coordenadas
+async function checkWeatherByCoords(lat, lon) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    weatherUI(data);
+}
+
 searchBtn.addEventListener("click", () => {
-    checkWeather(searchBox.value);
+    checkWeather(searchBox.value.trim());
 });
 
 searchBox.addEventListener("keypress", (e) => {
-    if (e.key === "Enter"){
-        checkWeather(searchBox.value);
-    }
+    e.key === "Enter" && checkWeather(searchBox.value.trim());
 });
+
+if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+        ({ coords }) => checkWeatherByCoords(coords.latitude, coords.longitude),
+        () => checkWeather("Santo Domingo"),
+        {timeout: 500000}
+    );
+} else {
+    checkWeather("Santo Domingo");
+}
+
